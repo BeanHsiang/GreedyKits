@@ -7,23 +7,22 @@ package org.httpclient {
   import com.adobe.net.URI;
   import com.hurlant.crypto.tls.TLSSocket;
   
-  import flash.net.Socket;
-  import flash.utils.ByteArray;
-  import flash.utils.Timer;
-  
+  import flash.errors.EOFError;
   import flash.events.Event;
   import flash.events.EventDispatcher;
   import flash.events.IOErrorEvent;
+  import flash.events.ProgressEvent;
   import flash.events.SecurityErrorEvent;
-  import flash.events.ProgressEvent;  
-  import flash.errors.EOFError;
   import flash.events.TimerEvent;
-  
-  import org.httpclient.io.HttpRequestBuffer;
-  import org.httpclient.io.HttpResponseBuffer;
-  import org.httpclient.io.HttpBuffer;
+  import flash.net.Socket;
+  import flash.system.Security;
+  import flash.utils.ByteArray;
+  import flash.utils.Timer;
   
   import org.httpclient.events.*;
+  import org.httpclient.io.HttpBuffer;
+  import org.httpclient.io.HttpRequestBuffer;
+  import org.httpclient.io.HttpResponseBuffer;
       
   /**
    * HTTP Socket.
@@ -55,7 +54,9 @@ package org.httpclient {
     private var _proxy:URI;
     
     private var _closed:Boolean;
-        
+    
+	private var _policyFileLoaded:Boolean=false;
+	
     /**
      * Create HTTP socket.
      *  
@@ -68,14 +69,19 @@ package org.httpclient {
       _proxy = proxy;
     }
     
+	public function loadPolicyFile(server:String, policyFilePort:int):void
+	{
+		Security.loadPolicyFile("xmlsocket://" + server + ":" + policyFilePort);
+	}
+	
     /**
      * Create the socket.
      * Create Socket or TLSSocket depending on URI scheme (http or https).
      */
-    protected function createSocket(secure:Boolean = false):void {      
+    protected function createSocket(secure:Boolean = false):void {
       if (secure && !_proxy) _socket = new TLSSocket();
       else _socket = new Socket();
-      
+	  
       _socket.addEventListener(Event.CONNECT, onConnect);       
       _socket.addEventListener(Event.CLOSE, onClose);
       _socket.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
@@ -138,6 +144,12 @@ package org.httpclient {
     protected function connect(uri:URI, onConnect:Function = null):void {
       _onConnect = onConnect;
 
+	  if (!_policyFileLoaded)
+	  {
+		  loadPolicyFile(uri.authority,Number(uri.port));		  
+		  _policyFileLoaded = true;
+	  }
+	  
       // Create the socket
       var secure:Boolean = (uri.scheme == "https");
       createSocket(secure);
@@ -150,7 +162,8 @@ package org.httpclient {
       if (!port) port = getDefaultPort(secure);
       
       var host:String = (_proxy) ? _proxy.authority : uri.authority;
-      Log.debug("Connecting: host: " + host + ", port: " + port);
+	  
+//	  External.debug("Connecting: host: " + host + ", port: " + port);
       _socket.connect(host, port);              
     }
     

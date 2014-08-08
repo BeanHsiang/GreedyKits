@@ -50,9 +50,9 @@ package com.greedyint.oss
 		
 		public override function getRequestUrl():String
 		{
-//			return "http://localhost:13810/Home/Index2";
+//			return "http://oss.aliyuntest.com:13810/Home/Index2";
 //			return super.getRequestUrl();
-			return StringUtil.format("http://{0}.oss.aliyuncs.com/{1}",_bucketName,_obj.name);
+			return StringUtil.format("http://{0}.oss.aliyuncs.com/{1}",_bucketName,_obj.name);			
 		}
 				
 		private var _obj:OssObject;

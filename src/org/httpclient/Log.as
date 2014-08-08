@@ -1,7 +1,8 @@
 package org.httpclient {
   
-  import flash.utils.getQualifiedClassName;
+  import flash.external.ExternalInterface;
   import flash.utils.describeType;
+  import flash.utils.getQualifiedClassName;
   
   /**
    * Log class.
@@ -18,7 +19,7 @@ package org.httpclient {
       
     // What to do with logged string  
     private static function output(s:String):void {
-      trace(s);
+		ExternalInterface.call("console.log", s);
     }
         
     /**

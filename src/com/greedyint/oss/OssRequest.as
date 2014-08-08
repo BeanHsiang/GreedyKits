@@ -60,12 +60,12 @@ package com.greedyint.oss
 		private function generateSignature(secret:String,method:String,MD5Content:String,contentType:String,ossMeta:String,ossResource:String):String
 		{
 			var origin:String=StringUtil.format("{0}\n{1}\n{2}\n{3}\n{4}{5}",method,MD5Content,contentType,_fmt.format(_date)+" GMT",ossMeta,ossResource);
-			trace(origin);
+//			trace(origin);
 			var hmacStr:String=HMAC.hash(secret,origin,SHA1);			 
 			var encoder:Base64Encoder=new Base64Encoder();
 			encoder.encodeBytes(ByteUtil.getBytesFromHexString(hmacStr));
 			var signature:String= encoder.flush();	
-			trace(signature);
+//			trace(signature);
 			return signature;
 		}
 		
@@ -74,15 +74,15 @@ package com.greedyint.oss
 			throw new Error("need extends");
 		}
 		
-		public function getHeaders(id:String,secret:String):Array
+		public function getHeaders():OssHeaders
 		{
-			_headers.addHeader("Authorization","OSS "+id+":"+generateSignature(secret,method,MD5Content,contentType,ossMeta,ossResource));
+			_headers.addHeader("Authorization","OSS "+ACCESS_KEY_ID+":"+generateSignature(ACCESS_KEY_SECRET,method,MD5Content,contentType,ossMeta,ossResource));
 			_headers.addHeader("Content-Length",contentLength);
 			_headers.addHeader("Content-Type",contentType);
 			_headers.addHeader("Date",_fmt.format(_date)+" GMT");
 			_headers.addHeader("Connection","Keep-Alive");
-			_headers.addHeader("Host",StringUtil.format("{0}.oss.aliyuncs.com", _bucketName));	
-			return _headers.headers;
+//			_headers.addHeader("Host",StringUtil.format("{0}.oss.aliyuncs.com", _bucketName));	
+			return _headers;
 		}
 		
 		private var _fmt:DateFormatter;  
@@ -90,5 +90,7 @@ package com.greedyint.oss
 		protected var _headers:OssHeaders;
 		protected var _date:Date;
 		private const OSS_HOST:String="oss.aliyuncs.com";
+		private const ACCESS_KEY_ID:String="gNWOZA84CZCF5BxN";
+		private const ACCESS_KEY_SECRET:String="kHxrIMru7lkZot7k43SZyN3m1gnb4Q";
 	}
 }

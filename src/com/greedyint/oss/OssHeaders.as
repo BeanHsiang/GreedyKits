@@ -1,6 +1,8 @@
 package com.greedyint.oss
 {
 	import flash.net.URLRequestHeader;
+	
+	import org.httpclient.HttpHeader;
 
 	public class OssHeaders
 	{
@@ -17,6 +19,16 @@ package com.greedyint.oss
 		public function get headers():Array
 		{
 		    return _headers;
+		}
+		
+		public function get standardHeaders():Array
+		{
+			var arr:Array=new Array();
+			for each (var obj:Object in _headers) 
+			{
+				arr.push(new URLRequestHeader(obj.name,obj.value));
+			}
+			return arr;
 		}
 		
 	    private var _headers:Array;
