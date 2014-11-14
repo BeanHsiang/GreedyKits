@@ -90,7 +90,7 @@ package com.greedyint.oss
 		protected var _headers:OssHeaders;
 		protected var _date:Date;
 		private const OSS_HOST:String="oss.aliyuncs.com";
-		private const ACCESS_KEY_ID:String="gNWOZA84CZCF5BxN";
-		private const ACCESS_KEY_SECRET:String="kHxrIMru7lkZot7k43SZyN3m1gnb4Q";
+		private const ACCESS_KEY_ID:String="";
+		private const ACCESS_KEY_SECRET:String="";
 	}
 }
